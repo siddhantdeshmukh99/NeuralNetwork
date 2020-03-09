@@ -55,7 +55,7 @@ class NeuralNetwork:
             ret.append(opt)
         return ret
                     
-    def backwardPropogation(self,output,target):
+    def backwardPropogation(self,output,target,learning_rate):
         err=[]
         for i,x in enumerate(output[-1]):                                  
             err.append(x*(1-x)*(target[i]-x))
@@ -73,11 +73,11 @@ class NeuralNetwork:
             for k,_ in enumerate(self.layers[j+1].perseptrons):
                 s=s+err[k]
                 for i,_ in enumerate(self.layers[j+1].perseptrons[k]):
-                    self.layers[j+1].perseptrons[k][i]=self.layers[j+1].perseptrons[k][i]+(err[k]*output[j][i]*(0.5))
-            self.layers[j+1].bias=self.layers[j+1].bias+s*(0.5)
+                    self.layers[j+1].perseptrons[k][i]=self.layers[j+1].perseptrons[k][i]+(err[k]*output[j][i]*(learning_rate))
+            self.layers[j+1].bias=self.layers[j+1].bias+s*(learning_rate)
             err=err1
         
-    def train(self):
+    def train(self,learning_rate):
         for i,x in enumerate(self.x_train.values):
             opt=self.forwardPropogation(x)
             target=[]
@@ -86,7 +86,7 @@ class NeuralNetwork:
                     target.append(1)
                 else:
                     target.append(0)
-            self.backwardPropogation(opt,target)
+            self.backwardPropogation(opt,target,learning_rate)
     
     def test(self,data):
         ret=[]
